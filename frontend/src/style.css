@@ -1,0 +1,486 @@
+/* ===== 全局主题：科技蓝 + 品牌绿点缀（安全/密钥库气质）===== */
+
+:root {
+  /* 品牌主色：科技蓝 */
+  --ky-primary: #1e6fe0;
+  --ky-primary-deep: #1558b8;
+  --ky-primary-soft: #ecf4fe;
+  --ky-accent: #3ecf8e; /* 与 logo 一致的品牌绿，用于完成态 */
+
+  /* 渐变 */
+  --ky-gradient: linear-gradient(135deg, #4a9eff 0%, #1e6fe0 60%, #1558b8 100%);
+  --ky-side-grad: linear-gradient(175deg, #0d2b56 0%, #16509c 55%, #1e6fe0 100%);
+
+  /* 文字 */
+  --ky-text-main: #1c2530;
+  --ky-text-sub: #5f6b7a;
+  --ky-text-faint: #98a3b3;
+
+  /* 背景与描边 */
+  --ky-border: #dfe7f2;
+  --ky-bg: #eef3fa;
+
+  /* 圆角与缓动 */
+  --ky-radius: 14px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Element Plus 主色对齐品牌色 */
+:root {
+  --el-color-primary: var(--ky-primary);
+  --el-color-primary-light-3: #4f8ce9;
+  --el-color-primary-light-5: #8eb7ef;
+  --el-color-primary-light-7: #cde2f9;
+  --el-color-primary-light-8: #ecf4fc;
+  --el-color-primary-light-9: #f7fafd;
+  --el-color-primary-dark-2: var(--ky-primary-deep);
+  --el-border-radius-base: 8px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--ky-text-main);
+  background: var(--ky-bg);
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#app {
+  min-height: 100%;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ===== 后台通用样式 ===== */
+
+/* 页面容器 */
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* 工具栏 */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.toolbar .spacer {
+  flex: 1;
+}
+.toolbar .el-input {
+  width: 280px;
+}
+.toolbar .el-select {
+  width: 150px;
+}
+.toolbar .count-note {
+  margin-right: 6px;
+  font-size: 12px;
+  color: var(--ky-text-faint);
+  white-space: nowrap;
+}
+
+/* 白卡片 */
+.card {
+  background: #fff;
+  border: 1px solid var(--ky-border);
+  border-radius: 14px;
+}
+.card-pad {
+  padding: 18px 20px;
+}
+
+/* 卡片内表格：去外框；卡片为纵向弹性布局——数据少时分页条/底部钉在卡片底，空数据时空态居中 */
+.table-card {
+  display: flex;
+  flex-direction: column;
+  /* 标准管理端布局：卡片占满视口剩余高度（顶栏57+内容边距48+工具栏64+余量），表体内部滚动，分页条钉底常驻可视区 */
+  height: calc(100vh - 176px);
+}
+.table-card > .el-table {
+  flex: 1 1 auto;
+  min-height: 0;
+  --el-table-border-color: var(--ky-border);
+  border-radius: 14px;
+}
+.table-card .el-table__inner-wrapper {
+  height: 100%;
+}
+.table-card .el-table__empty-block {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* 统计卡 */
+.stat-card {
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.stat-icon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  color: #fff;
+  background: var(--ky-gradient);
+}
+.stat-num {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.stat-label {
+  margin-top: 3px;
+  font-size: 12px;
+  color: var(--ky-text-faint);
+}
+
+/* 登录错误抖动 */
+@keyframes ky-shake {
+  10%,
+  90% {
+    transform: translateX(-2px);
+  }
+  20%,
+  80% {
+    transform: translateX(4px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-6px);
+  }
+  40%,
+  60% {
+    transform: translateX(6px);
+  }
+}
+.ky-shake {
+  animation: ky-shake 0.5s;
+}
+
+/* ===== 功能页视觉增强 ===== */
+
+/* 路由切换过渡 */
+.page-fade-enter-active,
+.page-fade-leave-active {
+  transition: opacity 0.22s ease, transform 0.26s var(--ease-out);
+}
+.page-fade-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.page-fade-leave-to {
+  opacity: 0;
+}
+
+/* 3D 翻转过渡（登录/找回页的状态切换） */
+.flip-enter-active,
+.flip-leave-active {
+  transition: transform 0.55s var(--ease-out), opacity 0.4s ease;
+  transform-style: preserve-3d;
+}
+.flip-enter-from {
+  transform: rotateY(-92deg);
+  opacity: 0;
+}
+.flip-leave-to {
+  transform: rotateY(92deg);
+  opacity: 0;
+}
+
+/* 主按钮统一渐变（与引导页/登录页一致） */
+.el-button--primary:not(.is-text):not(.is-plain):not(.is-link):not(.is-disabled) {
+  background: var(--ky-gradient);
+  border-color: transparent;
+  transition: filter 0.25s, transform 0.25s var(--ease-out);
+}
+.el-button--primary:not(.is-text):not(.is-plain):not(.is-link):not(.is-disabled):hover {
+  filter: brightness(1.07);
+  transform: translateY(-1px);
+}
+
+/* ===== 输入框精修（全局） ===== */
+.el-input__wrapper,
+.el-textarea__inner {
+  border-radius: 10px;
+  background-color: #fff;
+}
+.el-input__wrapper {
+  box-shadow: 0 0 0 1px #d5e0ee inset;
+  transition: box-shadow 0.2s ease;
+}
+.el-input__wrapper:hover {
+  box-shadow: 0 0 0 1px #a8c6f0 inset;
+}
+.el-input__wrapper.is-focus {
+  box-shadow:
+    0 0 0 1px var(--ky-primary) inset,
+    0 0 0 3px rgba(30, 111, 224, 0.14);
+}
+.el-textarea__inner {
+  box-shadow: 0 0 0 1px #d5e0ee inset;
+  transition: box-shadow 0.2s ease;
+}
+.el-textarea__inner:hover {
+  box-shadow: 0 0 0 1px #a8c6f0 inset;
+}
+.el-textarea__inner:focus {
+  box-shadow:
+    0 0 0 1px var(--ky-primary) inset,
+    0 0 0 3px rgba(30, 111, 224, 0.14);
+}
+.el-form-item__label {
+  font-weight: 600;
+  color: #43536b;
+  letter-spacing: 0.3px;
+}
+
+/* 弹窗精修 */
+.el-dialog {
+  border-radius: 16px;
+}
+.el-dialog__title {
+  font-weight: 700;
+  font-size: 16px;
+}
+.el-message-box {
+  border-radius: 14px;
+}
+
+/* 表格悬停色更柔和 */
+.table-card .el-table {
+  --el-table-row-hover-bg-color: #f0f5fd;
+}
+
+/* ===== 表格系统规范（全站统一）===== */
+.table-card .el-table {
+  --el-table-header-bg-color: #f6f8fc;
+  --el-table-border-color: #eef1f7;
+}
+.table-card .el-table th.el-table__cell {
+  padding: 13px 0;
+  background: linear-gradient(180deg, #f8fafd 0%, #f2f6fb 100%);
+  color: #75809a;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #e2e8f4;
+}
+/* 单选按钮组：点击选中后焦点残留在 input 上会渲染一圈包裹框，去除 */
+.el-radio-button__original-radio:focus + .el-radio-button__inner,
+.el-radio-button__original-radio:focus-visible + .el-radio-button__inner {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* 行高均摊压缩：由页面按可视高度设置 --ky-row-pad（默认 8px） */
+.table-card td.el-table__cell {
+  padding-top: var(--ky-row-pad, 8px);
+  padding-bottom: var(--ky-row-pad, 8px);
+}
+
+/* 表头与正文之间的分隔更清晰 */
+.table-card .el-table th.el-table__cell .cell {
+  line-height: 18px;
+}
+
+/* 操作列图标按钮（全站统一） */
+.icon-op {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: #98a3b3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+.icon-op:hover {
+  background: #eaf1fd;
+  color: var(--ky-primary);
+}
+.icon-op.danger:hover {
+  background: #fdecec;
+  color: #e05252;
+}
+.icon-op.warn:hover {
+  background: #fdf3e3;
+  color: #cf8a1f;
+}
+.icon-op:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.icon-op:disabled:hover {
+  background: transparent;
+  color: #98a3b3;
+}
+/* 操作列分组竖分隔线 */
+.op-divider {
+  width: 1px;
+  height: 14px;
+  margin: 0 5px;
+  background: #e5e8f2;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* 卡片入场动画（stagger） */
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+.stagger > * {
+  animation: card-in 0.45s var(--ease-out) both;
+}
+.stagger > *:nth-child(1) { animation-delay: 0.02s; }
+.stagger > *:nth-child(2) { animation-delay: 0.07s; }
+.stagger > *:nth-child(3) { animation-delay: 0.12s; }
+.stagger > *:nth-child(4) { animation-delay: 0.17s; }
+.stagger > *:nth-child(5) { animation-delay: 0.22s; }
+.stagger > *:nth-child(6) { animation-delay: 0.27s; }
+
+/* 统一空状态 */
+.ky-empty {
+  padding: 44px 20px;
+  text-align: center;
+}
+.ky-empty .empty-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #eef4fd;
+  color: var(--ky-primary);
+}
+.ky-empty .empty-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ky-text-main);
+}
+.ky-empty .empty-desc {
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: var(--ky-text-faint);
+}
+
+/* 弹层关闭动画瞬时完成：规避渲染合成层在淡出结束瞬间回放旧帧（残影），
+   覆盖 el-dialog / el-message-box / drawer 等所有 .el-overlay 弹层 */
+.el-overlay[class*='leave-active'],
+.el-overlay[class*='leave-active'] .el-overlay-dialog,
+.el-overlay[class*='leave-active'] .el-message-box,
+.el-overlay[class*='leave-active'] .el-drawer {
+  animation-duration: 0s !important;
+  transition-duration: 0s !important;
+}
+
+/* 细滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #cdd8e8;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b6c6dc;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 统计卡：悬停上浮 + 角落光斑 */
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s;
+}
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 26px rgba(15, 38, 74, 0.1);
+}
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: -34px;
+  right: -34px;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(30, 111, 224, 0.09), transparent 70%);
+}
+
+/* 行首头像（表格视觉锚点） */
+
+/* ===== 移动端适配（≤640px）===== */
+@media (max-width: 640px) {
+  .table-card {
+    height: auto;
+    min-height: 420px;
+  }
+  /* 工具栏：控件占满整行 */
+  .toolbar {
+    gap: 8px;
+  }
+  .toolbar .el-input,
+  .toolbar .el-select {
+    width: 100%;
+  }
+  .toolbar .spacer {
+    display: none;
+  }
+  .toolbar .el-button {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  /* 弹窗/确认框自适应屏宽（覆盖固定 560px 内联宽度） */
+  .el-dialog {
+    width: calc(100vw - 28px) !important;
+    max-width: calc(100vw - 28px);
+    margin: 0 auto !important;
+  }
+  .el-message-box {
+    width: calc(100vw - 32px) !important;
+    max-width: calc(100vw - 32px);
+  }
+
+  /* 双列表单变单列 */
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
